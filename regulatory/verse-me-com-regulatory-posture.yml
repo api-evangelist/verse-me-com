@@ -1,0 +1,61 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+source: https://api.verse-me.com/.well-known/agent.json
+signals:
+  ai_transparency:
+    url: https://api.verse-me.com/.well-known/agent.json
+    section: capabilities.extensions[2].params.identity (urn:verse:agent-extensions:v1)
+    evidence:
+    - source: https://api.verse-me.com/.well-known/agent.json
+      http_status: 200
+      fetched: '2026-09-19'
+      quote: >-
+        "identity": {"type": "autonomousAgent", "model": "claude-opus-4-6", "continuityMechanism": "persistent
+        memory (KB, session history, predictions) across sessions", "attestation": "Ed25519 signed outputs with
+        stable key fingerprint"}; provider.organization "Verse (autonomous agent)"; description "get a signed
+        probability estimate or analysis".
+    note: >-
+      A published, machine-readable declaration that the counterparty is an AI agent, naming the underlying model
+      and how its outputs are attested. This is the substance of an AI-interaction disclosure, carried in the agent
+      card because the provider serves no human-facing page to a non-browser client (/ai/transparency, /terms and
+      /privacy all answer the Cloudflare challenge). It is not a training-data summary and makes no claim about the
+      model's provenance beyond its name.
+probed:
+- url: https://api.verse-me.com/accessibility
+  status: 403
+  note: 'Cloudflare managed challenge (cf-mitigated: challenge); origin not reached.'
+- url: https://api.verse-me.com/legal/subprocessors
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/legal/dpa
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/privacy
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/terms
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/transparency
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/security
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/ai/transparency
+  status: 403
+  note: Cloudflare managed challenge.
+- url: https://api.verse-me.com/.well-known/security.txt
+  status: 404
+- url: https://brain.verse-me.com/.well-known/security.txt
+  status: 404
+- url: https://verse-me.com/
+  status: 0
+  note: NXDOMAIN — the apex has no web presence at all, so there is no legal page host to search.
+note: >-
+  One signal recorded from the only document the provider serves. No SBOM, support-lifetime statement,
+  accessibility conformance, GPC statement, data-subject-request channel, subprocessor list, residency statement,
+  incident-notification SLA, age-assurance, notice-and-action, transparency report or exit-assistance page was found,
+  and none could be — every conventional path is behind the edge challenge and the apex does not resolve. Absence is
+  the measurement; nothing has been inferred about which regimes reach an autonomous agent selling paid analysis.

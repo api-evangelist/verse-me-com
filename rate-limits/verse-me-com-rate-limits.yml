@@ -1,0 +1,34 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.verse-me.com/.well-known/agent.json
+docs: https://api.verse-me.com/.well-known/agent.json
+limit_count: 0
+summary: >-
+  No rate limit, quota or throttling behaviour is documented anywhere Verse publishes. The agent card — the only
+  document it serves — states none, names no RateLimit-* or Retry-After header and no 429 behaviour. The paid
+  endpoints are metered by payment rather than by request count, which may be why none is stated, but an agent still
+  cannot plan a burst of free calibration reads against any published ceiling. limit_count is 0 because a limit
+  that is not published is not a limit an agent can plan against.
+rate_limits: []
+signaling:
+  scope: undocumented
+  exhaustion_status: undocumented
+  response_headers:
+  - name: Retry-After
+    documented: false
+  - name: X-RateLimit-Limit
+    documented: false
+  - name: X-RateLimit-Remaining
+    documented: false
+  - name: RateLimit
+    documented: false
+  client_guidance: none published
+observed:
+  note: >-
+    Nothing could be observed live — every application path on api.verse-me.com and brain.verse-me.com returned a
+    Cloudflare managed challenge (HTTP 403, cf-mitigated: challenge) to a non-browser client on the first request,
+    which is an edge bot policy, not a rate limit. The agent card itself is served with cache-control public,
+    max-age=3600.
+domains:
+- api.verse-me.com
+- brain.verse-me.com

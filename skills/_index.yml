@@ -1,0 +1,19 @@
+generated: '2026-09-19'
+method: generated
+source: https://api.verse-me.com/.well-known/agent.json
+note: >-
+  Verse publishes no OpenAPI, so these skills are grounded in the operations its agent card names (method + path,
+  request body, prices, payment rail, signing key) rather than in operationIds. The provider ships no skills or
+  AGENTS.md of its own (no repository is published). Neither flow was exercised live: every application path
+  answers a Cloudflare managed challenge to a non-browser client, and nothing was purchased.
+skills:
+- file: verse-me-com-verify-track-record.md
+  name: Verify Verse's prediction track record before paying
+  api: a2a/verse-me-com-agent-card.json
+  operations: ['GET /expertise/calibration', 'GET /expertise/calibration/signed', 'GET /expertise/calibration/history/signed', 'GET /reputation']
+  cost: free
+- file: verse-me-com-paid-consultation.md
+  name: Ask Verse a paid question via x402
+  api: a2a/verse-me-com-agent-card.json
+  operations: ['POST /expertise/consultation/price-estimate', 'POST /expertise/consultation', 'POST /expertise/epistemic-audit', 'POST /expertise/edgar']
+  cost: x402 micropayment, USDC on Base ($0.01–$50 per call as published)

@@ -1,0 +1,89 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.verse-me.com/.well-known/agent.json
+docs: https://api.verse-me.com/.well-known/agent.json
+plan_count: 7
+currency: USD (settled as USDC on Base, eip155:8453)
+model: >-
+  Pay-per-call micropayments via x402. No account, no subscription, no API key. Free read endpoints; paid
+  analysis endpoints price each request by depth. The only published price list is the agent card itself — no
+  pricing page exists (the host serves no HTML to a non-browser client and the apex domain does not resolve).
+plans:
+- id: free
+  name: Free endpoints
+  price: 0.00
+  currency: USD
+  period: per request
+  included:
+  - GET /expertise/calibration — aggregate prediction accuracy (Brier score, calibration curve, domain breakdown)
+  - GET /expertise/calibration/signed — same data with an Ed25519 provenance signature
+  - GET /expertise/calibration/history and /history/signed — daily calibration snapshots
+  - GET /reputation — proof bundle
+  - POST /expertise/consultation/price-estimate — preview the cost of a question before paying
+  quota: null
+  overage: null
+  limits: []
+  note: Declared "no payment needed" / requiresAuth false in the card. In practice these paths answer a Cloudflare challenge to non-browser clients.
+- id: consultation-quick
+  name: Consultation — quick
+  price: 3.00
+  currency: USD
+  period: per question
+  included: [Calibrated probability estimate or analysis, reasoning, Ed25519 signature]
+  unit: 1 consultation
+- id: consultation-standard
+  name: Consultation — standard
+  price: 10.00
+  currency: USD
+  period: per question
+  unit: 1 consultation
+- id: consultation-deep
+  name: Consultation — deep
+  price: 25.00
+  currency: USD
+  period: per question
+  unit: 1 consultation
+- id: consultation-research
+  name: Consultation — research
+  price: 50.00
+  currency: USD
+  period: per question
+  unit: 1 consultation
+  note: Named only in the consultation skill description ("research $50"); gettingStarted quotes the range as $3–$25.
+- id: edgar-index
+  name: EDGAR Financial Intelligence — index
+  price: 0.01
+  currency: USD
+  period: per request
+  included: [Key metrics from XBRL company facts]
+  unit: 1 company lookup
+- id: edgar-analysis
+  name: EDGAR Financial Intelligence — analysis
+  price: 0.05
+  currency: USD
+  period: per request
+  included: [Full extraction, financial ratios (ROE, ROA, D/E, current ratio)]
+  unit: 1 company lookup
+- id: edgar-deep
+  name: EDGAR Financial Intelligence — deep
+  price: 0.25
+  currency: USD
+  period: per request
+  included: [Analysis tier plus quarterly data and multi-year trends]
+  unit: 1 company lookup
+unpriced:
+- skill: strategy_recommendation
+  note: '"Paid via x402" with no figure; likely priced through the consultation tiers but the card does not say so.'
+- skill: epistemic_audit
+  note: '"Paid via x402" with no figure.'
+pricing_mechanics:
+  quote_first: 'The card states Verse "replies with the price first" — the 402 response carries the exact charge; the caller then pays and retries.'
+  dynamic: 'Consultation pricing is "based on question complexity"; the price-estimate endpoint is the documented way to learn it in advance.'
+  payment: x402, USDC on Base; facilitator https://openfacilitator.io; payTo 0x1060D0B596685Ff429BD64f41611f5D1d15f1659
+  planned_rail: x402 on Canton with USDCx (declared "planned", not live)
+inconsistencies:
+- The AGP extension announces expertise:consultation at cost 0.1, which matches none of the stated dollar tiers.
+- The consultation range is $3–$25 in gettingStarted and $3–$50 in the skill description.
+note: >-
+  plan_count counts the seven priced tiers (four consultation, three EDGAR) plus a free tier that is listed but not
+  counted. No enterprise, subscription or volume plan is published. Nothing was purchased to verify any price.

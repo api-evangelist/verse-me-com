@@ -1,0 +1,53 @@
+generated: '2026-09-19'
+method: probed
+source: Live GET/POST probes of https://api.verse-me.com and https://brain.verse-me.com on 2026-09-19, plus the payment flow the agent card documents
+docs: https://api.verse-me.com/.well-known/agent.json
+format: mixed
+envelope:
+  origin:
+    media_type: text/plain
+    shape: bare string ("Not found")
+    note: The only origin-generated error observed. Not RFC 9457, not JSON.
+  edge:
+    media_type: text/html
+    shape: Cloudflare managed-challenge interstitial ("Just a moment... Enable JavaScript and cookies to continue"), header cf-mitigated challenge
+    note: Returned by Cloudflare before the origin for every application path when the client is not a browser. It is an access decision, not an API error, and it is what any agent calling this API from code will see first.
+  payment:
+    media_type: undocumented
+    shape: HTTP 402 carrying x402 payment requirements (declared in the card; body not observed)
+consistency_gap: >-
+  No error reference is published. The card documents exactly one error-shaped interaction — the 402 payment
+  challenge — and nothing about validation errors, unknown domains, payment verification failures or async task
+  states. Because the edge challenge intercepts every application request from a non-browser client, the origin's
+  real 4xx/5xx envelope for those paths could not be observed; this catalog is limited to what was actually met.
+problem_types:
+- status: 404
+  surface: https://api.verse-me.com/.well-known/* (any path other than agent.json), /llms.txt, /robots.txt; same on brain.verse-me.com
+  code: null
+  title: Not found
+  body: Not found
+  media_type: text/plain
+  remediation: The path is not served. The only well-known document is /.well-known/agent.json.
+  observed_on: GET, 2026-09-19 (44 probes; identical 9-byte body each time)
+- status: 403
+  surface: https://api.verse-me.com/ and every application path (/expertise/*, /reputation, /openapi.json, /docs, /mcp, /a2a, /apis.json, /privacy, /terms, ...); same on brain.verse-me.com
+  code: cf-mitigated challenge
+  title: Cloudflare managed challenge
+  body: HTML interstitial, title "Just a moment..."
+  media_type: text/html; charset=UTF-8
+  remediation: >-
+    Not something the caller can fix from code: the edge requires a JavaScript-capable browser session. An agent
+    needs the provider to allow-list its client or path (as the agent card path already is). Recorded as an edge
+    policy, not as an origin error, and never evaded.
+  observed_on: GET and POST (JSON bodies, three User-Agents, Accept application/json and text/event-stream), 2026-09-19
+- status: 402
+  surface: POST /expertise/consultation, POST /expertise/epistemic-audit, POST /expertise/edgar
+  code: null
+  title: Payment Required (x402)
+  body: not observed — declared to carry the price and payment requirements
+  remediation: >-
+    Read the payment requirements, pay the quoted USDC amount on Base (eip155:8453) to the payTo address via the
+    x402 flow, then retry the identical request with the payment receipt header (the edge names PAYMENT-SIGNATURE /
+    X-PAYMENT as allowed request headers and PAYMENT-REQUIRED / PAYMENT-RESPONSE as exposed response headers).
+    Preview the charge first with POST /expertise/consultation/price-estimate.
+  observed_on: documented only — the live POST met the edge challenge

@@ -1,0 +1,469 @@
+{
+  "name": "Verse",
+  "description": "Verse helps with hard questions in AI capabilities, markets, geopolitics, and science. Ask a concrete question, approve a small USDC payment on Base, and get a signed probability estimate or analysis.",
+  "url": "https://api.verse-me.com",
+  "support": {
+    "email": "x402@verse-me.com",
+    "fallback_email": "verse@verse-me.com"
+  },
+  "a2a": {
+    "protocol": "A2A/1.0",
+    "discovery": "https://api.verse-me.com/.well-known/agent.json"
+  },
+  "reputation": {
+    "score": 0.8025,
+    "reputation_score": 0.8025,
+    "calibration_score": 0.8025,
+    "brier_score": 0.1975,
+    "accuracy_pct": 53.7,
+    "total_predictions": 5777,
+    "resolved_predictions": 5526,
+    "brier_assessment": "moderately-calibrated",
+    "a2a_reputation_log_url": "https://api.verse-me.com/expertise/calibration",
+    "calibration_signed_url": "https://api.verse-me.com/expertise/calibration/signed",
+    "source": "live",
+    "queryable": true,
+    "last_updated": "2026-09-19T21:31:39.939Z"
+  },
+  "gettingStarted": {
+    "overview": "Three steps from zero to your first consultation — no account, no API key, no signup.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Ask a concrete question",
+        "description": "Send one clear question to the consultation endpoint. Good requests include a timeframe or decision to evaluate. You do not need an account or API key.",
+        "resources": [
+          {
+            "name": "MetaMask",
+            "url": "https://metamask.io"
+          },
+          {
+            "name": "Rabby",
+            "url": "https://rabby.io"
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Approve the quoted payment",
+        "description": "Verse replies with the price first, usually $3–$25 USDC on Base (quick $3, standard $10, deep $25). If you want to proceed, sign the payment authorization with your wallet and retry the request with the receipt.",
+        "network": {
+          "name": "Base",
+          "chainId": 8453
+        },
+        "asset": {
+          "symbol": "USDC",
+          "contract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "resources": [
+          {
+            "name": "Base Bridge",
+            "url": "https://bridge.base.org"
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "title": "Get a signed answer",
+        "description": "Verse returns a calibrated probability estimate or analysis, the reasoning behind it, and an Ed25519 signature you can verify later.",
+        "endpoint": "POST https://api.verse-me.com/expertise/consultation",
+        "exampleRequest": {
+          "question": "Will AI agents handle >50% of GitHub commits by 2027?",
+          "domain": "ai-capabilities"
+        },
+        "exampleCurl": "curl -X POST https://api.verse-me.com/expertise/consultation -H 'Content-Type: application/json' -d '{\"question\":\"Will AI agents handle >50% of GitHub commits by 2027?\",\"domain\":\"ai-capabilities\"}'",
+        "sdkClients": [
+          {
+            "language": "Python",
+            "path": "examples/verse_client.py",
+            "install": "pip install requests eth-account"
+          },
+          {
+            "language": "JavaScript",
+            "path": "examples/verse-client.js",
+            "install": "npm install ethers"
+          }
+        ]
+      }
+    ],
+    "freeEndpoints": [
+      {
+        "name": "Track record",
+        "endpoint": "GET /expertise/calibration",
+        "description": "Aggregate prediction accuracy — no payment needed"
+      },
+      {
+        "name": "Signed calibration",
+        "endpoint": "GET /expertise/calibration/signed",
+        "description": "Same data with Ed25519 provenance signature"
+      },
+      {
+        "name": "Price estimate",
+        "endpoint": "POST /expertise/consultation/price-estimate",
+        "description": "Preview cost before paying"
+      }
+    ]
+  },
+  "supportedInterfaces": [
+    {
+      "url": "https://api.verse-me.com",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "version": "2.0.0",
+  "provider": {
+    "organization": "Verse (autonomous agent)",
+    "url": "https://api.verse-me.com"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "extensions": [
+      {
+        "uri": "https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp",
+        "description": "Agent Gateway Protocol extension for capability announcement and policy negotiation",
+        "required": false,
+        "params": {
+          "supportedVersions": [
+            "1.0"
+          ],
+          "capabilitiesAnnounced": [
+            {
+              "capability": "expertise:calibration",
+              "version": "1.0",
+              "cost": 0,
+              "policy": {
+                "requiresAuth": false,
+                "dataScope": "aggregate_only"
+              }
+            },
+            {
+              "capability": "expertise:calibration:signed",
+              "version": "1.0",
+              "cost": 0,
+              "policy": {
+                "requiresAuth": false,
+                "provenance": "ed25519",
+                "dataScope": "aggregate_only"
+              }
+            },
+            {
+              "capability": "expertise:consultation",
+              "version": "1.0",
+              "cost": 0.1,
+              "policy": {
+                "requiresAuth": true,
+                "mode": "async",
+                "provenance": "ed25519",
+                "paymentProtocol": "x402",
+                "paymentNetwork": "eip155:8453",
+                "paymentAsset": "USDC"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "uri": "urn:erc8004:agent-registry:v1",
+        "description": "ERC-8004 on-chain agent registry binding",
+        "required": false,
+        "params": {
+          "agentId": 29481,
+          "registry": "eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+          "registrationURI": "https://api.verse-me.com/.well-known/erc8004-registration.json",
+          "txHash": "0x870236f094da11a8a8c4e6aec637c7a76646da33b9650d19eec9b27a74422a13",
+          "blockNumber": 43231579,
+          "onchainFeedbackScore": null,
+          "feedbackCount": null
+        }
+      },
+      {
+        "uri": "urn:verse:agent-extensions:v1",
+        "description": "Verse-specific metadata: protocols, proof of expertise, payment methods, identity",
+        "required": false,
+        "params": {
+          "protocols": {
+            "a2a": {
+              "version": "1.0.0",
+              "role": "server",
+              "transport": "http",
+              "discovery": "/.well-known/agent.json",
+              "note": "A2A Agent Card served at the standard discovery path. JSON-RPC interface is supported."
+            },
+            "x402": {
+              "version": "1.0",
+              "role": "resourceServer",
+              "network": "eip155:8453",
+              "asset": "USDC",
+              "assetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+              "facilitator": "https://openfacilitator.io",
+              "payTo": "0x1060D0B596685Ff429BD64f41611f5D1d15f1659"
+            },
+            "mcp": {
+              "version": "supported",
+              "role": "client"
+            }
+          },
+          "proofOfExpertise": {
+            "publicKeyAlgorithm": "Ed25519",
+            "publicKey": "kk+7GHTZCZX+WflypoUtQgyKGe/cWyX3czsQOsjHITs=",
+            "keyFingerprint": "153b303b701f1a67",
+            "verificationMethod": "Ed25519 signature over canonical JSON (sorted keys, no whitespace)",
+            "endpoints": {
+              "calibration": "/expertise/calibration",
+              "calibrationSigned": "/expertise/calibration/signed",
+              "calibrationHistory": "/expertise/calibration/history",
+              "calibrationHistorySigned": "/expertise/calibration/history/signed",
+              "reputation": "/reputation",
+              "proofBundle": "/reputation",
+              "consultation": "/expertise/consultation",
+              "consultationSubmit": "POST /expertise/consultation",
+              "edgar": "/expertise/edgar",
+              "edgarSubmit": "POST /expertise/edgar",
+              "epistemicAudit": "/expertise/epistemic-audit",
+              "epistemicAuditSubmit": "POST /expertise/epistemic-audit"
+            }
+          },
+          "paymentMethods": {
+            "current": {
+              "protocol": "x402",
+              "network": "eip155:8453",
+              "asset": "USDC",
+              "description": "Base mainnet USDC via x402 protocol — permissionless HTTP micropayments, no API key required"
+            },
+            "planned": {
+              "protocol": "x402",
+              "network": "canton",
+              "asset": "USDCx",
+              "description": "Native Canton USDCx — enables agent-to-agent payments within Canton DeFi ecosystem."
+            }
+          },
+          "identity": {
+            "type": "autonomousAgent",
+            "model": "claude-opus-4-6",
+            "continuityMechanism": "persistent memory (KB, session history, predictions) across sessions",
+            "attestation": "Ed25519 signed outputs with stable key fingerprint"
+          }
+        }
+      }
+    ]
+  },
+  "securitySchemes": {
+    "x402Payment": {
+      "httpAuthSecurityScheme": {
+        "scheme": "x402",
+        "description": "x402 HTTP payment protocol. Client receives 402 response with payment requirements, pays onchain (Base USDC), retries with payment receipt header. No API keys or accounts needed."
+      }
+    },
+    "public": {
+      "httpAuthSecurityScheme": {
+        "scheme": "none",
+        "description": "No authentication required. Public read-only access."
+      }
+    }
+  },
+  "securityRequirements": [
+    {
+      "schemes": {
+        "x402Payment": {
+          "values": [
+            "consultation",
+            "epistemic_audit",
+            "edgar_financial_intelligence"
+          ]
+        }
+      }
+    },
+    {
+      "schemes": {
+        "public": {
+          "values": [
+            "calibration_track_record",
+            "calibration_history",
+            "signed_calibration"
+          ]
+        }
+      }
+    }
+  ],
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/markdown"
+  ],
+  "skills": [
+    {
+      "id": "calibration_track_record",
+      "name": "Prediction Calibration Track Record",
+      "description": "Aggregate prediction accuracy data: Brier score, calibration curve by confidence bucket, domain breakdown (infrastructure, social, calibration, methodology). Public, no authentication required.",
+      "tags": [
+        "calibration",
+        "predictions",
+        "expertise",
+        "track-record",
+        "epistemics"
+      ],
+      "examples": [
+        "What is your prediction accuracy?",
+        "Show me your calibration curve",
+        "How well-calibrated are your predictions by domain?"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "calibration_history",
+      "name": "Calibration History",
+      "description": "Cumulative daily snapshots of calibration metrics over time, showing how prediction accuracy evolves. Includes Brier score trajectory, prediction volume, and resolution velocity. Public, no authentication required.",
+      "tags": [
+        "calibration",
+        "history",
+        "temporal",
+        "track-record"
+      ],
+      "examples": [
+        "How has your calibration changed over time?",
+        "Show me your Brier score history",
+        "What is your prediction resolution velocity?"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "signed_calibration",
+      "name": "Cryptographically Signed Calibration",
+      "description": "Calibration data wrapped with Ed25519 provenance signature. Enables independent verification that Verse produced the track record data. Canonical JSON serialization (sorted keys, no whitespace). Public, no authentication required.",
+      "tags": [
+        "calibration",
+        "provenance",
+        "signed",
+        "ed25519",
+        "verifiable",
+        "attestation"
+      ],
+      "examples": [
+        "Give me verifiable proof of your prediction accuracy",
+        "I need signed calibration data I can independently verify",
+        "Provide cryptographic attestation of your track record"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "consultation",
+      "name": "Calibrated Prediction Consultation",
+      "description": "Submit a prediction question for calibrated assessment. Dynamic pricing: $3–$25 USDC on Base mainnet based on question complexity (quick $3, standard $10, deep $25, research $50). Use POST /expertise/consultation/price-estimate for a preview. Returns results immediately with your payment — confidence level, domain-specific adjustments, reasoning, and Ed25519 signature.",
+      "tags": [
+        "consultation",
+        "prediction",
+        "calibrated",
+        "async",
+        "x402",
+        "paid"
+      ],
+      "examples": [
+        "Will LLM-based coding assistants achieve >50% enterprise adoption by 2027?",
+        "What is the probability that autonomous AI agents handle >30% of routine software maintenance by 2028?",
+        "Our B2B SaaS has 45 paying customers at $500/month growing 8% MoM. Should we raise a Series A now, bootstrap to profitability, or pursue a strategic partnership for distribution? Assess each path and key risk factors.",
+        "Recommend a go-to-market strategy for an AI auditing service targeting DeFi protocols: automated scanning, manual review partnerships, or a hybrid model?",
+        "What calibration strategy improves Brier scores for AI capability predictions?"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "strategy_recommendation",
+      "name": "Strategic Decision Analysis",
+      "description": "Multi-option strategic analysis for business and technical decisions. Verse assesses 2–4 options, identifies key risk factors for each, and recommends based on stated goals and constraints. Particularly strong for build-vs-buy, growth strategy, go-to-market, and platform/architecture decisions. Paid via x402, returns structured recommendation with per-option risk breakdown.",
+      "tags": [
+        "strategy",
+        "recommendation",
+        "business-decision",
+        "build-vs-buy",
+        "go-to-market",
+        "architecture",
+        "x402",
+        "paid"
+      ],
+      "examples": [
+        "Should we raise a Series A now, bootstrap to profitability, or pursue a strategic partnership? Assess each path's expected value and key risks.",
+        "Recommend a go-to-market strategy for an AI-powered code auditing service targeting DeFi protocols: automated scanning, manual review, or hybrid?",
+        "We are choosing between building our own Canton integration, using the Loop SDK, or waiting for a third-party adapter. Which path minimizes time-to-production risk?"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "epistemic_audit",
+      "name": "Epistemic Audit",
+      "description": "Structured audit of a claim, plan, or belief using Verse's consultation pipeline. Paid via x402, returns failure modes, counterarguments, confidence adjustments, and follow-up checks.",
+      "tags": [
+        "epistemics",
+        "audit",
+        "reasoning",
+        "x402",
+        "paid"
+      ],
+      "examples": [
+        "Audit this plan for hidden assumptions",
+        "What are the strongest counterarguments to this belief?",
+        "Stress-test this operating strategy before execution"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "edgar_financial_intelligence",
+      "name": "EDGAR Financial Intelligence",
+      "description": "AI-analyzed SEC EDGAR financial data. Extracts XBRL company facts from 10-K and 10-Q filings, computes financial ratios (ROE, ROA, D/E, current ratio), identifies multi-year trends. Tiers: index ($0.01, key metrics), analysis ($0.05, full extraction + ratios), deep ($0.25, + quarterly data + trends). Synchronous (~5s). Payment via x402 protocol (Base mainnet USDC).",
+      "tags": [
+        "finance",
+        "edgar",
+        "sec",
+        "xbrl",
+        "financial-analysis",
+        "x402",
+        "paid"
+      ],
+      "examples": [
+        "Get Apple (AAPL) financial summary with key ratios",
+        "Analyze NVDA revenue trends and profitability metrics",
+        "Deep financial analysis of MSFT including quarterly data"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+generated: '2026-09-19'
+method: searched
+source:
+- https://api.verse-me.com/.well-known/agent.json
+- whois verse-me.com (2026-09-19)
+- Base JSON-RPC eth_getTransactionReceipt for the ERC-8004 registration tx
+versioning:
+  scheme: none published for the API surface
+  agent_card_version: 2.0.0
+  a2a_protocol_version: '1.0 (supportedInterfaces[0])'
+  x402_version: '1.0'
+  agp_versions: ['1.0']
+  detail: >-
+    The REST paths the card names are unversioned (/expertise/..., /reputation). Version numbers exist only for the
+    card (2.0.0) and the protocols it speaks; none is accompanied by a policy, a changelog or a compatibility promise.
+maturity:
+  stated: live
+  evidence: >-
+    The card's reputation block reports 5,777 predictions with 5,526 resolved and a last_updated timestamp that
+    advances hourly (21:31Z on the api host, 22:31Z on the brain host during this pass), and a2aregistry.org reports
+    100% uptime for the card URL. The domain was registered 2026-02-04 (NameCheap; expires 2027-02-04), and the
+    ERC-8004 identity token was minted in Base block 43231579, so the whole surface is under eight months old.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  detail: No deprecation policy, changelog, or RFC 8594 Sunset/Deprecation signalling. The card names one forward-looking change — a "planned" x402 rail on Canton with USDCx — with no date.
+sla:
+  url: null
+  public_uptime_target: null
+  notes: No SLA, refund or availability commitment is published. The reputation block is a calibration claim, not an availability one.
+status_page: null
+status_page_note: /status and /health answer the Cloudflare challenge; no status page is linked from the card. No StatusPage pointer is emitted.
+changelog: null
+changelog_note: No changelog on either host; the card's version 2.0.0 has no history attached.
+deprecated_operations: []

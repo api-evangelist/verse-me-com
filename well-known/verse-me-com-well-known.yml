@@ -1,0 +1,151 @@
+generated: '2026-09-19'
+method: probed
+source: >-
+  Live GET probes of the named /.well-known/* path list on api.verse-me.com and brain.verse-me.com (the only two
+  hosts under verse-me.com that resolve), plus the apex and www, 2026-09-19. Every row is a request that was
+  issued; every status is the one returned.
+summary:
+  hosts_probed: 4
+  hosts_resolving: 2
+  paths_probed: 44
+  documents_served: 2
+  hit_count: 1
+  path_echo_control: passed
+  note: >-
+    Verse serves exactly one well-known document, the A2A agent card at the legacy /.well-known/agent.json, and
+    serves it identically from api.verse-me.com and brain.verse-me.com (captured once, in a2a/). Every other named
+    path returns the origin's real 9-byte text/plain 404 ("Not found") — not an SPA shell — and a negative-control
+    path that cannot exist also 404s, so the single 200 is a deliberately served document. The two non-well-known
+    APIs.json paths (/apis.json, /apis.yml) do not reach the origin at all: like every application path on these
+    hosts they answer a Cloudflare managed challenge (HTTP 403, cf-mitigated: challenge) to a non-browser client,
+    so their status is the edge's, not the provider's. No security.txt, no OAuth/OIDC discovery, no RFC 9728
+    protected-resource metadata, no RFC 9727 API catalog, no APIs.json, no AAuth resource document, no ai-plugin,
+    no UCP/ACP manifest. The card declares MCP role "client", so there is no MCP host to add to this set; the
+    x402 payment surface has no well-known location to probe. The apex verse-me.com and www.verse-me.com have no
+    A record (NXDOMAIN) — the Website pointer inherited from the harvest stub was dead on arrival and has been
+    replaced with the card's provider.url.
+hosts:
+- host: api.verse-me.com
+  role: A2A card host, declared JSON-RPC interface URL, x402 resource server (card url / provider.url / supportedInterfaces[0].url)
+  documents:
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json
+    bytes: 17268
+    file: ../a2a/verse-me-com-agent-card.json
+    standard: A2A Agent Card (1.0-shaped; graded flavored by the catalog grader for no top-level protocolVersion)
+    note: Legacy pre-0.3 path. Saved verbatim under a2a/ and graded in a2a/verse-me-com-a2a.yml.
+  - path: /.well-known/agent-card.json
+    status: 404
+    note: Canonical A2A 1.0 / RFC 8615 path. Not served.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    note: The card's payment scheme is x402, not OAuth; no RFC 9728 metadata is expected or served.
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 403
+    note: 'Cloudflare managed challenge (cf-mitigated: challenge), not an origin answer. Treated as a miss.'
+  - path: /apis.yml
+    status: 403
+    note: Cloudflare managed challenge, not an origin answer. Treated as a miss.
+  - path: /.well-known/erc8004-registration.json
+    status: 404
+    note: Not on the standard list; probed because the card's ERC-8004 extension names it as registrationURI. Not served.
+  - path: /.well-known/x402
+    status: 404
+    note: Not on the standard list; probed because the card declares x402 and some x402 providers publish a manifest here. Not served.
+  - path: /.well-known/mcp.json
+    status: 404
+    note: Not on the standard list; probed to confirm the card's "mcp role client" claim. No server card.
+  - path: /llms.txt
+    status: 404
+  - path: /robots.txt
+    status: 404
+  - path: /.well-known/apievangelist-negative-control-7f3a91.json
+    status: 404
+    note: Negative control. The origin 404s an impossible path, so the agent.json 200 above is a served document.
+- host: brain.verse-me.com
+  role: Second host on the same Cloudflare-proxied origin; named as tokenURI host by the ERC-8004 on-chain registration
+  documents:
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: application/json
+    bytes: 17268
+    file: ../a2a/verse-me-com-agent-card.json
+    note: Byte-identical to the api host's card except reputation.last_updated (a live hourly field). Not saved twice.
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/erc8004-registration.json
+    status: 404
+    note: This is the exact URL the on-chain tokenURI for agentId 29481 resolves to. Not served.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 403
+    note: Cloudflare managed challenge. Treated as a miss.
+  - path: /apis.yml
+    status: 403
+    note: Cloudflare managed challenge. Treated as a miss.
+  - path: /llms.txt
+    status: 404
+  - path: /robots.txt
+    status: 404
+  - path: /.well-known/apievangelist-negative-control-7f3a91.json
+    status: 404
+- host: verse-me.com
+  role: Registrable domain (apex)
+  resolves: false
+  documents:
+  - path: /.well-known/agent.json
+    status: 0
+    note: NXDOMAIN — no A/AAAA record. NS (Cloudflare), MX (Cloudflare Email Routing) and SOA exist; the zone hosts mail and subdomains only.
+- host: www.verse-me.com
+  role: www
+  resolves: false
+  documents:
+  - path: /.well-known/agent.json
+    status: 0
+    note: NXDOMAIN.

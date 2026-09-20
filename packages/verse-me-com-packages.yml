@@ -1,0 +1,39 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.verse-me.com/.well-known/agent.json (gettingStarted.steps[2].sdkClients) + registry lookups 2026-09-19
+package_count: 0
+official_count: 0
+summary: >-
+  Verse publishes no client library on any registry. The agent card names two example clients by repository path —
+  examples/verse_client.py ("pip install requests eth-account") and examples/verse-client.js ("npm install ethers") —
+  but no repository URL accompanies them and none was found (GitHub repository search for verse-me returned nothing
+  relevant; the registry listing has repository null). The install lines name third-party dependencies (requests,
+  eth-account, ethers), not a Verse package. Two candidate entries are recorded so the absence is checkable, each with
+  version null.
+packages:
+- name: verse_client.py
+  language: python
+  registry: none
+  official: true
+  url: null
+  version: null
+  published: null
+  install: pip install requests eth-account
+  note: >-
+    Named in the card as path examples/verse_client.py; the repository is not published. pypi.org/pypi/verse-me,
+    verse-client and verse-me-client all 404 (2026-09-19). The install line installs dependencies, not this file.
+- name: verse-client.js
+  language: javascript
+  registry: none
+  official: true
+  url: null
+  version: null
+  published: null
+  install: npm install ethers
+  note: >-
+    Named in the card as path examples/verse-client.js; the repository is not published. registry.npmjs.org/verse-me and
+    @verse-me/client 404; npm search "verse-me" returns nothing related (2026-09-19).
+registries_checked:
+- {registry: npm, query: 'verse-me, @verse-me/client, search "verse-me"', result: absent}
+- {registry: pypi, query: 'verse-me, verse-client, verse-me-client', result: absent}
+- {registry: github, query: 'repositories matching verse-me / "verse-me.com"', result: absent}

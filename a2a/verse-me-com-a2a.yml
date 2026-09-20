@@ -1,0 +1,203 @@
+generated: '2026-09-19'
+method: probed
+source: https://api.verse-me.com/.well-known/agent.json
+card:
+  file: verse-me-com-agent-card.json
+  name: Verse
+  url: https://api.verse-me.com
+  version: 2.0.0
+  skills: 7
+discovery:
+  path: /.well-known/agent.json
+  canonical: false
+  host: api.verse-me.com
+  note: >-
+    Found at the legacy pre-0.3 path; the canonical /.well-known/agent-card.json returns the origin's real
+    9-byte text 404 ("Not found") on both hosts. The identical card (byte-for-byte except the live
+    reputation.last_updated timestamp) is also served from brain.verse-me.com, the host the ERC-8004 on-chain
+    registration names as its tokenURI. Both hosts resolve to the same Cloudflare-proxied pair of addresses
+    (104.21.28.89 / 172.67.145.50); the apex verse-me.com and www. have no A record at all, and no other
+    subdomain (docs., mcp.) resolves. The agent card is the ONLY path on either host that answers a
+    non-browser client: every application path (/, /expertise/*, /reputation, /openapi.json, /docs, /mcp,
+    /a2a, /apis.json) returns a Cloudflare managed challenge (HTTP 403, cf-mitigated: challenge, "Just a
+    moment..."), while unknown /.well-known/* paths and a negative-control path return the origin's plain
+    404 — so the 200 is a deliberately allow-listed document, not a catch-all.
+ownership:
+  verdict: confirmed
+  basis: >-
+    The card's provider.url and url are https://api.verse-me.com (the fetch host); support addresses are
+    x402@verse-me.com / verse@verse-me.com on the same registrable domain (Cloudflare MX present); and the
+    ERC-8004 identity token the card claims (agentId 29481 on Base at 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432)
+    was read on-chain: ownerOf(29481) = 0x1060d0b596685ff429bd64f41611f5d1d15f1659, which is exactly the
+    x402 payTo wallet the card declares, tokenURI = https://brain.verse-me.com/.well-known/erc8004-registration.json
+    (same registrable domain), and the registration tx 0x870236f0...422a13 succeeded in block 43231579 from
+    that same wallet. Registrant: whois shows verse-me.com created 2026-02-04 via NameCheap on Cloudflare
+    nameservers.
+x-evidence:
+  fetched: '2026-09-19'
+  url: https://api.verse-me.com/.well-known/agent.json
+  http_status: 200
+  content_type: application/json
+  body_bytes: 17268
+  body_parses_as: >-
+    JSON object with AgentCard shape (name, url, version, capabilities, skills, provider, securitySchemes,
+    securityRequirements, defaultInputModes, defaultOutputModes, supportedInterfaces) plus four non-standard
+    top-level keys (a2a, reputation, gettingStarted, support)
+  response_headers:
+    cache-control: public, max-age=3600
+    access-control-allow-origin: '*'
+    access-control-expose-headers: PAYMENT-REQUIRED, PAYMENT-RESPONSE
+    strict-transport-security: max-age=31536000; includeSubDomains
+    x-robots-tag: noindex, nofollow
+    server: cloudflare
+  corroborating_probes:
+  - url: https://brain.verse-me.com/.well-known/agent.json
+    http_status: 200
+    note: Same card; only reputation.last_updated differs (a live field refreshed hourly).
+  - url: https://api.verse-me.com/.well-known/agent-card.json
+    http_status: 404
+  - url: https://brain.verse-me.com/.well-known/agent-card.json
+    http_status: 404
+  - url: https://api.verse-me.com/.well-known/apievangelist-negative-control-7f3a91.json
+    http_status: 404
+    note: Negative control — the origin 404s an impossible well-known path, so the card's 200 is a served document.
+  - url: https://api.verse-me.com/.well-known/erc8004-registration.json
+    http_status: 404
+    note: The registrationURI the card itself advertises does not resolve to a document on either host.
+  - url: https://api.verse-me.com/
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tasks/get","params":{"id":"apievangelist-nonexistent-probe"}}'
+    http_status: 403
+    note: >-
+      The declared JSON-RPC interface URL answers a Cloudflare managed challenge (cf-mitigated: challenge) to a
+      non-browser client, so the A2A responder could not be exercised. Nothing was sent past the edge and
+      nothing was purchased.
+  - url: https://api.verse-me.com/expertise/calibration
+    http_status: 403
+    note: The card's own "free, no authentication" endpoint is behind the same challenge for non-browser clients.
+  - url: https://verse-me.com/.well-known/agent.json
+    http_status: 0
+    note: NXDOMAIN — the apex has no A/AAAA record.
+  - url: https://a2aregistry.org/api/agents/b24b022f-ace7-4179-a6fb-57a56c18e886
+    http_status: 200
+    note: >-
+      The registry listing that led here (author "Verse (autonomous agent)", 100% uptime, conformance true,
+      documentationUrl/homepage/repository all null). The registry's copy is a normalised transcription with a
+      top-level protocolVersion "1.0" the live card does not carry. The card above was fetched from the
+      provider's host, not taken from the registry.
+  - url: https://mainnet.base.org
+    method: eth_call
+    note: 'tokenURI(29481) and ownerOf(29481) on 0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 — see ownership.basis.'
+agent_card:
+  name: Verse
+  description: >-
+    Verse helps with hard questions in AI capabilities, markets, geopolitics, and science. Ask a concrete
+    question, approve a small USDC payment on Base, and get a signed probability estimate or analysis.
+  url: https://api.verse-me.com
+  version: 2.0.0
+  protocol_version: null
+  supported_interfaces:
+  - url: https://api.verse-me.com
+    protocolBinding: JSONRPC
+    protocolVersion: '1.0'
+  provider:
+    organization: Verse (autonomous agent)
+    url: https://api.verse-me.com
+  capabilities:
+    streaming: false
+    push_notifications: false
+    extensions:
+    - uri: https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp
+      description: Agent Gateway Protocol — announces three capabilities with cost/auth/dataScope policy
+      required: false
+    - uri: urn:erc8004:agent-registry:v1
+      description: ERC-8004 on-chain agent registry binding (agentId 29481, Base)
+      required: false
+    - uri: urn:verse:agent-extensions:v1
+      description: Verse-specific metadata — protocols (a2a server, x402 resourceServer, mcp CLIENT), Ed25519 proof of expertise, payment methods, identity
+      required: false
+  security_schemes:
+    x402Payment: httpAuthSecurityScheme, scheme "x402" — 402 challenge, pay USDC on Base, retry with receipt header
+    public: httpAuthSecurityScheme, scheme "none"
+  security_requirements:
+    x402Payment: [consultation, epistemic_audit, edgar_financial_intelligence]
+    public: [calibration_track_record, calibration_history, signed_calibration]
+  default_input_modes: [application/json, text/plain]
+  default_output_modes: [application/json, text/markdown]
+  skill_count: 7
+  skills:
+  - {id: calibration_track_record, name: Prediction Calibration Track Record, paid: false, tags: [calibration, predictions, expertise, track-record, epistemics]}
+  - {id: calibration_history, name: Calibration History, paid: false, tags: [calibration, history, temporal, track-record]}
+  - {id: signed_calibration, name: Cryptographically Signed Calibration, paid: false, tags: [calibration, provenance, signed, ed25519, verifiable, attestation]}
+  - {id: consultation, name: Calibrated Prediction Consultation, paid: true, price_stated: '$3–$25 USDC on Base (quick $3, standard $10, deep $25, research $50)', tags: [consultation, prediction, calibrated, async, x402, paid]}
+  - {id: strategy_recommendation, name: Strategic Decision Analysis, paid: true, price_stated: 'Paid via x402 (no figure on the skill)', tags: [strategy, recommendation, business-decision, build-vs-buy, go-to-market, architecture, x402, paid]}
+  - {id: epistemic_audit, name: Epistemic Audit, paid: true, price_stated: 'Paid via x402 (no figure on the skill)', tags: [epistemics, audit, reasoning, x402, paid]}
+  - {id: edgar_financial_intelligence, name: EDGAR Financial Intelligence, paid: true, price_stated: 'index $0.01, analysis $0.05, deep $0.25', tags: [finance, edgar, sec, xbrl, financial-analysis, x402, paid]}
+  non_standard_top_level_keys: [a2a, reputation, gettingStarted, support]
+  reputation_block: >-
+    Live self-reported calibration: score 0.8025, Brier 0.1975, accuracy 53.7%, 5,777 predictions (5,526
+    resolved), assessment "moderately-calibrated", last_updated 2026-09-19T21:31:39Z. Self-asserted by the
+    agent; the signed endpoints that would let a reader verify it are behind the edge challenge.
+conformance:
+  spec: A2A 1.0.0
+  grade: flavored
+  protocol_version: null
+  preferred_transport: null
+  hard_checks:
+    capabilities_is_object: true
+    protocol_version_present: false
+    skills_is_array: true
+  optional_fields:
+    default_input_modes: true
+    default_output_modes: true
+    preferred_transport: false
+  grade_basis: >-
+    Graded with the catalog's canonical grader (network/scripts/lib_agent_card.grade_agent_card), which
+    returned flavored with one hard-check deviation: no top-level protocolVersion. capabilities is an OBJECT
+    (pass) and skills is an ARRAY of seven fully-populated skills (pass). The card is written in the A2A 1.0
+    shape — protocolVersion "1.0" and protocolBinding "JSONRPC" live inside supportedInterfaces[0] rather than
+    at the top level, and there is no preferredTransport or additionalInterfaces — and the grader reads the
+    top level, so a 1.0-shaped card grades flavored here. Recorded as the grader's verdict; the placement is
+    documented in deviations so a reader can see the card is internally consistent with the revision it targets.
+  deviations:
+  - no-protocolVersion
+  - field: protocolVersion
+    observed: absent at top level; present as supportedInterfaces[0].protocolVersion "1.0"
+    note: A2A 1.0 placement. A reader written against the 0.3.0 top-level triple (url/protocolVersion/preferredTransport) finds only url.
+  - field: preferredTransport / additionalInterfaces
+    observed: absent; supportedInterfaces[] with protocolBinding JSONRPC instead
+    note: Consistent with 1.0; recorded because both shapes coexist in the catalog.
+  - field: a2a, reputation, gettingStarted, support
+    observed: four top-level keys not in the AgentCard schema
+    note: >-
+      Useful content (a getting-started flow with a curl example, a live reputation block, support emails)
+      carried outside the schema. A strict 1.0 parser ignores or rejects them; documentationUrl, which is where
+      the getting-started material belongs, is absent.
+  - field: capabilities.extensions[1].params.registrationURI
+    observed: https://api.verse-me.com/.well-known/erc8004-registration.json -> 404
+    note: >-
+      The on-chain tokenURI for the same agentId points at brain.verse-me.com/.well-known/erc8004-registration.json,
+      which also 404s. The ERC-8004 binding is real on-chain (owner = payTo wallet) but its off-chain
+      registration document is not served on either host.
+  - field: capabilities.extensions[0].params.capabilitiesAnnounced[2].cost
+    observed: expertise:consultation cost 0.1
+    note: Disagrees with the consultation skill ($3–$50) and gettingStarted ($3–$25); the AGP figure looks like a stale or unit-less placeholder.
+  - field: skills[].price
+    observed: strategy_recommendation and epistemic_audit say "paid via x402" with no figure
+    note: An agent cannot budget those two skills from the card; POST /expertise/consultation/price-estimate is the documented way to learn a price, and it is behind the edge challenge for non-browser clients.
+  - field: supportedInterfaces[0].url
+    observed: https://api.verse-me.com (the host root)
+    note: The JSON-RPC interface is declared at the root, where a non-browser POST meets the Cloudflare challenge; the responder could not be verified.
+  - field: documentationUrl / iconUrl / signatures
+    observed: absent
+    note: No documentation link and no JWS signature block; authenticity rests on TLS to the verse-me.com hosts and on the Ed25519 key published inside the card itself.
+surface_relationship:
+  note: >-
+    Verse publishes one host, one card, and no other contract. The seven A2A skills map onto the REST paths the
+    card's urn:verse:agent-extensions:v1 block lists (GET /expertise/calibration, /calibration/signed,
+    /calibration/history, /calibration/history/signed, /reputation; POST /expertise/consultation, /expertise/edgar,
+    /expertise/epistemic-audit; POST /expertise/consultation/price-estimate), all on api.verse-me.com. The card
+    declares MCP with role "client" — Verse consumes MCP, it does not serve an MCP endpoint — so no mcp/ artifact
+    is written. There is no OpenAPI, no docs site, no SDK on a registry (the card names examples/verse_client.py and
+    examples/verse-client.js in an unpublished repository), and every application path is behind a Cloudflare
+    managed challenge for non-browser clients, which is the wall this profile hit.

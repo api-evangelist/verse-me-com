@@ -1,0 +1,184 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.verse-me.com/.well-known/agent.json — AGP extension capabilitiesAnnounced[] policies + urn:verse:agent-extensions:v1 endpoint list + securityRequirements
+description: >-
+  Recommended x-agentic-access execution contracts for the twelve operations Verse's agent card names. There is no
+  OpenAPI, so the heuristic derive-agentic-access.py could not run; the action-class and auth requirement are read
+  from the provider's OWN Agent Gateway Protocol policy block (requiresAuth, cost, mode, dataScope per capability)
+  and its securityRequirements (public vs x402Payment per skill), which is why the method is searched rather than
+  generated. consequence is API Evangelist's reading: every paid call is an irreversible on-chain USDC transfer with
+  no published refund path, so paid operations are rated physical with human-in-the-loop required and a token TTL
+  ceiling of 300s; the free calibration/reputation reads are connected/read. TTL ceilings mirror the agentic-access
+  Spectral ruleset. A governance starting point, not a provider claim; audience is left null to bind per deployment.
+  See research/curity/agentic-governance/.
+audience: null
+custody_note: >-
+  The caller pays from a wallet it controls; Verse never holds a caller credential. The consequence ratings describe
+  what a signed x402 payment does once broadcast — it is final — not what Verse can do with the caller's keys.
+summary:
+  operations: 12
+  by_action_class:
+    connected: 6
+    acting: 6
+  by_consequence:
+    read: 6
+    physical: 6
+  human_in_the_loop_required: 6
+  provider_policy:
+    capabilities_announced: 3
+    requiresAuth_false: 2
+    requiresAuth_true: 1
+    payment_gated_skills: 3
+    public_skills: 3
+operations:
+- operation: GET /expertise/calibration
+  skill: calibration_track_record
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    provider-policy: {capability: 'expertise:calibration', requiresAuth: false, cost: 0, dataScope: aggregate_only}
+- operation: GET /expertise/calibration/signed
+  skill: signed_calibration
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    provider-policy: {capability: 'expertise:calibration:signed', requiresAuth: false, cost: 0, provenance: ed25519, dataScope: aggregate_only}
+- operation: GET /expertise/calibration/history
+  skill: calibration_history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    provider-policy: {security: public}
+- operation: GET /expertise/calibration/history/signed
+  skill: calibration_history
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    provider-policy: {security: public, provenance: ed25519}
+- operation: GET /reputation
+  skill: null
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    provider-policy: {security: public (proof bundle)}
+- operation: POST /expertise/consultation/price-estimate
+  skill: consultation (preview)
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+    dry-run-for: POST /expertise/consultation
+    provider-policy: {security: public, listed under freeEndpoints as "Preview cost before paying"}
+- operation: POST /expertise/consultation
+  skill: consultation
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: irreversible on-chain USDC payment ($3–$50 published); no refund or cancel path published; price is dynamic
+    audit: required
+    provider-policy: {capability: 'expertise:consultation', requiresAuth: true, cost: 0.1 (disagrees with the skill's $3–$50), mode: async, paymentProtocol: x402, paymentNetwork: 'eip155:8453', paymentAsset: USDC, provenance: ed25519}
+- operation: POST /expertise/consultation (strategy_recommendation)
+  skill: strategy_recommendation
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: paid via x402 with NO published price; the caller cannot bound the spend from the card
+    audit: required
+    provider-policy: {security: x402Payment}
+- operation: POST /expertise/epistemic-audit
+  skill: epistemic_audit
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: paid via x402 with NO published price; irreversible
+    audit: required
+    provider-policy: {security: x402Payment}
+- operation: POST /expertise/edgar (index)
+  skill: edgar_financial_intelligence
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: on-chain payment ($0.01 published); irreversible even at this size
+    audit: required
+    provider-policy: {security: x402Payment, price: '$0.01'}
+- operation: POST /expertise/edgar (analysis)
+  skill: edgar_financial_intelligence
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: on-chain payment ($0.05 published); irreversible
+    audit: required
+    provider-policy: {security: x402Payment, price: '$0.05'}
+- operation: POST /expertise/edgar (deep)
+  skill: edgar_financial_intelligence
+  x-agentic-access:
+    action-class: acting
+    consequence: physical
+    subject: required
+    purpose-required: true
+    token:
+      max-ttl: 300
+      exchange: required
+    escalation:
+      human-in-the-loop: required
+      reason: on-chain payment ($0.25 published); irreversible
+    audit: required
+    provider-policy: {security: x402Payment, price: '$0.25'}

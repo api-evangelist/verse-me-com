@@ -1,0 +1,130 @@
+generated: '2026-09-19'
+method: searched
+source: https://api.verse-me.com/.well-known/agent.json
+derived_from: null
+docs:
+- https://api.verse-me.com/.well-known/agent.json
+summary: >-
+  Verse's conformance profile is the agent-commerce protocol stack, read from the one document it publishes: an
+  A2A agent card in the 1.0 shape (graded flavored by the catalog grader for carrying protocolVersion inside
+  supportedInterfaces rather than at the top level), the x402 HTTP payment protocol as its only credential
+  (USDC on Base, CAIP-2 eip155:8453, facilitator openfacilitator.io), an ERC-8004 on-chain agent identity that
+  was verified by reading the Base registry contract, the AGP capability-announcement extension, JSON-RPC 2.0 as
+  the declared A2A binding, and Ed25519-signed outputs as a provenance mechanism. It declares no OAuth/OIDC, no
+  RFC 9457 problem details, no security.txt, no API catalog and no APIs.json. Everything marked "declared" below
+  is the card's own statement; the endpoints that would confirm the x402 challenge, the JSON-RPC responder and the
+  signed calibration data all sit behind a Cloudflare managed challenge for non-browser clients and were not
+  observed.
+standards:
+- id: a2a
+  name: Agent2Agent protocol
+  version: '1.0'
+  conforms: true
+  grade: flavored
+  evidence: >-
+    a2a/verse-me-com-agent-card.json — supportedInterfaces[0] {url https://api.verse-me.com, protocolBinding JSONRPC,
+    protocolVersion "1.0"}, capabilities object, skills[] of 7, securitySchemes/securityRequirements,
+    defaultInputModes/defaultOutputModes. Card served at the legacy /.well-known/agent.json on two hosts. Catalog
+    grader verdict: flavored (no top-level protocolVersion). JSON-RPC responder not exercised (edge challenge).
+- id: x402
+  name: x402 HTTP payment protocol
+  conforms: true
+  verification: declared
+  domain_standard_signature: true
+  evidence: >-
+    Card securitySchemes.x402Payment (httpAuthSecurityScheme scheme "x402": "Client receives 402 response with payment
+    requirements, pays onchain (Base USDC), retries with payment receipt header"); urn:verse:agent-extensions:v1
+    protocols.x402 {version 1.0, role resourceServer, network eip155:8453, asset USDC, assetContract
+    0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913, facilitator https://openfacilitator.io, payTo
+    0x1060D0B596685Ff429BD64f41611f5D1d15f1659}; the card response itself exposes CORS headers PAYMENT-REQUIRED /
+    PAYMENT-RESPONSE and allows request headers PAYMENT-SIGNATURE / X-PAYMENT.
+  note: >-
+    The 402 challenge was NOT observed: POST https://api.verse-me.com/expertise/consultation with a JSON question
+    (and no payment) returned the Cloudflare managed challenge (403, cf-mitigated: challenge), never reaching the
+    origin. Recorded as conforming on the provider's own declaration, unverified live. Verse is not listed on
+    x402-list.com (25 services, checked 2026-09-19).
+- id: erc-8004
+  name: ERC-8004 Trustless Agents — on-chain agent identity registry
+  conforms: true
+  verification: partial
+  domain_standard_signature: true
+  evidence: >-
+    Card extension urn:erc8004:agent-registry:v1 {agentId 29481, registry eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432,
+    txHash 0x870236f094da11a8a8c4e6aec637c7a76646da33b9650d19eec9b27a74422a13, blockNumber 43231579}. Verified on
+    Base via public JSON-RPC (mainnet.base.org) 2026-09-19: ownerOf(29481) = 0x1060d0b596685ff429bd64f41611f5d1d15f1659
+    (the card's payTo wallet); tokenURI(29481) = https://brain.verse-me.com/.well-known/erc8004-registration.json;
+    the transaction receipt shows status 0x1 in block 43231579 (0x293a95b) from that wallet to the registry.
+  gaps:
+  - The off-chain registration document is not served: the card's registrationURI (api host) and the on-chain tokenURI (brain host) both return 404.
+  - onchainFeedbackScore and feedbackCount are null in the card; no reputation registry entry was checked.
+- id: agp
+  name: Agent Gateway Protocol extension (a2a-samples)
+  version: '1.0'
+  conforms: true
+  verification: declared
+  evidence: >-
+    capabilities.extensions[0].uri https://github.com/a2aproject/a2a-samples/tree/main/extensions/agp, required false,
+    capabilitiesAnnounced[] of 3 (expertise:calibration cost 0 requiresAuth false dataScope aggregate_only;
+    expertise:calibration:signed same + provenance ed25519; expertise:consultation cost 0.1 requiresAuth true mode
+    async paymentProtocol x402 paymentNetwork eip155:8453 paymentAsset USDC).
+  note: The announced consultation cost (0.1) disagrees with the skill's stated $3–$50 range.
+- id: json-rpc-2.0
+  conforms: true
+  verification: declared
+  evidence: supportedInterfaces[0].protocolBinding JSONRPC; the extensions block says "JSON-RPC interface is supported". A POST to the declared interface URL met the edge challenge, so no JSON-RPC envelope was observed.
+- id: caip-2
+  name: CAIP-2 chain identifier
+  conforms: true
+  evidence: eip155:8453 (Base mainnet) used in the AGP policy, the x402 protocol block and the ERC-8004 registry reference; chainId 8453 also given numerically in gettingStarted.
+- id: ed25519-signed-outputs
+  name: Ed25519 signature over canonical JSON (provider-defined provenance)
+  conforms: true
+  verification: declared
+  evidence: >-
+    proofOfExpertise {publicKeyAlgorithm Ed25519, publicKey kk+7GHTZCZX+WflypoUtQgyKGe/cWyX3czsQOsjHITs=, keyFingerprint
+    153b303b701f1a67, verificationMethod "Ed25519 signature over canonical JSON (sorted keys, no whitespace)"}; skills
+    signed_calibration and consultation describe signed responses.
+  note: Not a published standard — a documented provider mechanism. No signed payload could be fetched to verify against the key.
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 scheme in the card; /.well-known/oauth-authorization-server 404 on both hosts.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration 404 on both hosts.
+- id: rfc9728-protected-resource
+  conforms: false
+  evidence: /.well-known/oauth-protected-resource 404 on both hosts. Not expected — the credential model is payment, not bearer tokens.
+- id: mcp
+  name: Model Context Protocol
+  conforms: false
+  evidence: The card declares mcp {version "supported", role "client"} — Verse consumes MCP servers; it does not serve one. /.well-known/mcp.json 404; /mcp meets the edge challenge.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: The only origin error observed is a 9-byte text/plain "Not found" on 404; the card documents a 402 flow but no problem+json envelope. See errors/verse-me-com-problem-types.yml.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt and /security.txt 404 on both hosts.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog and .json 404 on both hosts.
+- id: apis-json
+  conforms: false
+  evidence: /.well-known/apis.json 404; /apis.json and /apis.yml answer the Cloudflare challenge rather than the origin.
+- id: llms-txt
+  conforms: false
+  evidence: /llms.txt 404 on both hosts; the file in llms/ was generated by API Evangelist.
+- id: openapi
+  conforms: false
+  evidence: No contract is published; /openapi.json, /openapi.yaml, /swagger.json, /docs, /redoc all answer the Cloudflare challenge and no docs host exists (docs.verse-me.com does not resolve).
+- id: rfc8594-sunset
+  conforms: false
+  evidence: No versioning or deprecation policy is published anywhere; card version 2.0.0 with no changelog.
+- id: idempotency-key
+  conforms: false
+  evidence: No idempotency mechanism is documented for the paid POST endpoints. See conventions/verse-me-com-conventions.yml.
+compliance_program:
+  published: false
+  note: >-
+    No SOC 2, ISO 27001 or other certification is claimed in the card, and the host serves no trust, security,
+    privacy or terms page to a non-browser client (all answer the Cloudflare challenge). No Compliance pointer is
+    emitted.
