@@ -32,7 +32,7 @@ tags:
 - SEC EDGAR
 - Blockchain
 - Base
-- agent-native
+- Agent-Native
 tags_raw:
 - Company
 - AI Agents
@@ -61,8 +61,13 @@ apis:
     grader (protocolVersion is inside supportedInterfaces, not top-level). The JSON-RPC responder could not be
     exercised: the interface URL answers a Cloudflare managed challenge to non-browser clients.
   humanURL: https://api.verse-me.com/.well-known/agent.json
-  baseURL: https://api.verse-me.com
   tags:
+  - A2A
+  - AI Agents
+  - x402
+  - Forecasting
+  - Agent-Native
+  tags_raw:
   - A2A
   - AI Agents
   - x402
@@ -89,7 +94,6 @@ apis:
     limit or error reference is published. Every one of these paths — including the ones the card calls free and
     public — answered a Cloudflare managed challenge (HTTP 403) to a non-browser client on 2026-09-19.
   humanURL: https://api.verse-me.com/.well-known/agent.json
-  baseURL: https://api.verse-me.com
   tags:
   - Forecasting
   - Calibration
@@ -174,3 +178,10 @@ x-coverage:
   - url: https://verse-me.com/
     status: 0
   checked: '2026-09-19'
+x-a2a:
+  verified: true
+  probed: '2026-09-26'
+  url: "https://api.verse-me.com/.well-known/agent.json"
+  grade: "flavored"
+  protocol_version: "1.0"
+  control: 404
