@@ -120,6 +120,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Pricing
+  url: https://api.verse-me.com/.well-known/agent.json
 - type: Website
   name: Provider URL declared in the agent card (the apex verse-me.com has no DNS A record)
   url: https://api.verse-me.com/
